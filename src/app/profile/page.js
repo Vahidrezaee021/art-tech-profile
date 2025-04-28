@@ -1,39 +1,42 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
 
 export default function Profile() {
-  const router = useRouter();
-  const { query } = router;
   const [profileData, setProfileData] = useState({});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // اگر query.profile موجود است، داده‌ها را بارگذاری می‌کنیم
-    if (query?.profile) {
-      try {
-        const data = JSON.parse(query.profile);
-        setProfileData(data);
-      } catch (error) {
-        console.error("Error parsing profile data:", error);
-      }
+    // بارگذاری داده‌ها از localStorage
+    const data = localStorage.getItem("profileData");
+    if (data) {
+      setProfileData(JSON.parse(data));
     }
     setLoading(false);
-  }, [query]);
+  }, []);
 
   if (loading) {
     return <div>Loading...</div>;
   }
 
+  if (!profileData.name) {
+    return <div>No Profile Data Available</div>;
+  }
+
   return (
-    <div className="profile-container">
-      <h1>{profileData.name}</h1>
-      <p>{profileData.bio}</p>
-      <p>{profileData.category}</p>
-      {profileData.image && (
-        <img src={profileData.image} alt="Profile Image" />
-      )}
+    <div className="max-w-3xl mx-auto p-6 bg-white rounded-lg shadow-lg mt-8">
+      <div className="flex items-center mb-6">
+        {profileData.image && (
+          <img
+            src={profileData.image}
+            alt="Profile Image"
+            className="w-24 h-24 rounded-full border-4 border-gray-300 mr-4"
+          />
+        )}
+        <h1 className="text-3xl font-bold text-gray-900">{profileData.name}</h1>
+      </div>
+      <p className="text-lg text-gray-700 mb-4">{profileData.bio}</p>
+      <p className="text-md text-gray-600 font-semibold">{profileData.category}</p>
     </div>
   );
 }

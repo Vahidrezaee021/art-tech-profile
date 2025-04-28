@@ -1,7 +1,7 @@
-"use client";  // این دستور را اضافه کنید
+"use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";  // از این hook استفاده می‌کنید
+import { useRouter } from "next/navigation";
 
 export default function CreateProfile() {
   const [selectedImage, setSelectedImage] = useState(null);
@@ -12,7 +12,7 @@ export default function CreateProfile() {
     category: "",
   });
 
-  const router = useRouter();  // استفاده از useRouter
+  const router = useRouter();
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -48,23 +48,14 @@ export default function CreateProfile() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // برای آینده: ذخیره در دیتابیس
-    console.log({
-      ...formData,
-      image: selectedImage,
-    });
-  
+    // داده‌ها را در localStorage ذخیره کنید
+    localStorage.setItem("profileData", JSON.stringify({ ...formData, image: selectedImage }));
+
     // پس از ذخیره، به صفحه پروفایل منتقل شو
-    const query = new URLSearchParams({
-      profile: JSON.stringify({ ...formData, image: selectedImage }),
-    }).toString();
-  
-    // اصلاح استفاده از router.push
-    router.push(`/profile?${query}`); // مسیر باید به صورت رشته باشد
-  
+    router.push("/profile");
+
     alert("Profile Saved Successfully!");
   };
-  
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-6">
@@ -73,37 +64,18 @@ export default function CreateProfile() {
         className="flex flex-col gap-6 w-full max-w-md bg-white rounded-xl p-8 shadow-md"
       >
         <div
-          className={`border-4 ${
-            dragActive ? "border-blue-400" : "border-dashed border-gray-300"
-          } rounded-xl p-6 transition-all`}
+          className={`border-4 ${dragActive ? "border-blue-400" : "border-dashed border-gray-300"} rounded-xl p-6 transition-all`}
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
         >
-          <label
-            htmlFor="imageUpload"
-            className="flex flex-col items-center justify-center cursor-pointer"
-          >
+          <label htmlFor="imageUpload" className="flex flex-col items-center justify-center cursor-pointer">
             {selectedImage ? (
-              <img
-                src={selectedImage}
-                alt="Selected"
-                className="object-cover w-32 h-32 rounded-full mb-4"
-              />
+              <img src={selectedImage} alt="Selected" className="object-cover w-32 h-32 rounded-full mb-4" />
             ) : (
               <div className="flex flex-col items-center">
-                <svg
-                  className="w-12 h-12 text-gray-400 mb-2"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M7 16V4h10v12m-5-4v8m0 0h-4m4 0h4"
-                  />
+                <svg className="w-12 h-12 text-gray-400 mb-2" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M7 16V4h10v12m-5-4v8m0 0h-4m4 0h4" />
                 </svg>
                 <p className="text-gray-500 text-sm">Drag & Drop or Click to Upload</p>
               </div>

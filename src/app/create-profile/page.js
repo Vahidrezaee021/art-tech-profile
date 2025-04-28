@@ -1,6 +1,7 @@
-"use client";
+"use client";  // این دستور را اضافه کنید
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";  // از این hook استفاده می‌کنید
 
 export default function CreateProfile() {
   const [selectedImage, setSelectedImage] = useState(null);
@@ -10,6 +11,8 @@ export default function CreateProfile() {
     bio: "",
     category: "",
   });
+
+  const router = useRouter();  // استفاده از useRouter
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -50,8 +53,18 @@ export default function CreateProfile() {
       ...formData,
       image: selectedImage,
     });
+  
+    // پس از ذخیره، به صفحه پروفایل منتقل شو
+    const query = new URLSearchParams({
+      profile: JSON.stringify({ ...formData, image: selectedImage }),
+    }).toString();
+  
+    // اصلاح استفاده از router.push
+    router.push(`/profile?${query}`); // مسیر باید به صورت رشته باشد
+  
     alert("Profile Saved Successfully!");
   };
+  
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-6">
